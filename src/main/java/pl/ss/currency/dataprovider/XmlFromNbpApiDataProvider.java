@@ -18,7 +18,7 @@ public class XmlFromNbpApiDataProvider implements DataProvider {
     private final String RESPONSE_FORMAT = "?format=xml";
 
     @Override
-    public String getCurrencyDataByRequest(CurrencyRequest request) {
+    public String getCurrencyDataByRequest(CurrencyRequest request) throws NbpApiConnectionException {
 
         HttpURLConnection connection = null;
         String currencyDataResponse;
