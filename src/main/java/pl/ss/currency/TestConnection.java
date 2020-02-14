@@ -24,12 +24,12 @@ public class TestConnection {
 
         //XML
     	
-        MapperProvider mapperProvider = new XmlResponseFromNbpMapper();
+        MapperProvider xmlMapperProvider = new XmlResponseFromNbpMapper();
         DataProvider dataProvider = new XmlFromNbpApiDataProvider();
         RequestValidator requestValidator = new CurrencyRequestValidator();
         DataProviderResponseResolver dataResponseResolver = new DataProviderResponseValidator();
 
-        CurrencyProvider currencyApi = new CurrencyFromNbpXMLProvider(dataProvider, mapperProvider, requestValidator, dataResponseResolver);
+        CurrencyProvider currencyApi = new CurrencyFromNbpXMLProvider(dataProvider, xmlMapperProvider, requestValidator, dataResponseResolver);
 
         //Database
         MapperProvider databaseMapper = new DatabaseResponseMapper();
@@ -48,8 +48,8 @@ public class TestConnection {
         CurrencyInfo currencyInfoFromNbp = currencyApi.getCurrencyInfo(currencyRequest);
         CurrencyInfo currencyInfoFromDatabase = currencyDatabase.getCurrencyInfo(currencyRequest);
 
-        System.out.println(currencyInfoFromDatabase.toString());
-        System.out.println(currencyInfoFromNbp.toString());
+        System.out.println("[DatabaseDataProvider]" + currencyInfoFromDatabase.toString());
+        System.out.println("[XMLDataProvider]" + currencyInfoFromNbp.toString());
 
     }
 

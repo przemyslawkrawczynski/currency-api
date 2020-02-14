@@ -1,14 +1,16 @@
 package pl.ss.currency.api;
 
-import org.junit.Test;
-import org.mockito.Mock;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
+import org.junit.Test;
 
 import pl.ss.currency.dataprovider.DataProvider;
-import pl.ss.currency.dataprovider.DatabaseDataProvider;
 import pl.ss.currency.domain.CurrencyInfo;
 import pl.ss.currency.dtos.request.CurrencyRequest;
 import pl.ss.currency.mapper.MapperProvider;

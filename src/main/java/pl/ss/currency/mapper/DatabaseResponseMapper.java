@@ -13,7 +13,7 @@ public class DatabaseResponseMapper implements MapperProvider {
         return new CurrencyInfo.CurrencyInfoBuilder()
                 .setCurrencyCode(response[1])
                 .setCurrencyName("")
-                .setCheckingDate(response[0])
+                .setCheckingDate(response[2])
                 .setCurrencyRate(BigDecimal.valueOf(Double.parseDouble(response[3])))
                 .build();
     }
