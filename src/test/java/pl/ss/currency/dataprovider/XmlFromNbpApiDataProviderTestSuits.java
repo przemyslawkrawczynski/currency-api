@@ -1,4 +1,4 @@
-package dataproviders;
+package pl.ss.currency.dataprovider;
 
 import java.time.LocalDate;
 
@@ -7,12 +7,11 @@ import org.junit.Test;
 
 import pl.ss.currency.dataprovider.XmlFromNbpApiDataProvider;
 import pl.ss.currency.dtos.request.CurrencyRequest;
-import pl.ss.currency.mapper.XmlResponseFromNbpMapper;
+
 
 public class XmlFromNbpApiDataProviderTestSuits {
 	
 	private XmlFromNbpApiDataProvider dataProvider = new XmlFromNbpApiDataProvider();
-	private XmlResponseFromNbpMapper MapperProvider = new XmlResponseFromNbpMapper();
 	
 	@Test
 	public void shouldGetXmlStringResponseFromNbpApiWhenRequestIsNotSundayOrSaturday() {
@@ -31,6 +30,8 @@ public class XmlFromNbpApiDataProviderTestSuits {
 		
 		//When
 		String response = dataProvider.getCurrencyDataByRequest(preparedRequest);
+		
+		//Then
 		Assert.assertTrue(response instanceof String);
 	
 	}
