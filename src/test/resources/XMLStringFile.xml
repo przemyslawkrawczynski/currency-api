@@ -1,0 +1,14 @@
+<ExchangeRatesSeries
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Table>A</Table>
+	<Currency>dolar amerykański</Currency>
+	<Code>USD</Code>
+	<Rates>
+		<Rate>
+			<No>030/A/NBP/2020</No>
+			<EffectiveDate>2020-02-13</EffectiveDate>
+			<Mid>3.9104</Mid>
+		</Rate>
+	</Rates>
+</ExchangeRatesSeries>
