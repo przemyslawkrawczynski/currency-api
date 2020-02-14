@@ -35,7 +35,7 @@ public class CurrencyRequestValidator implements RequestValidator {
     }
 
     @Override
-    public void validate(CurrencyRequest requestDto) {
+    public void validate(CurrencyRequest requestDto) throws ValidationException {
         validateDate(requestDto.getOnDate());
         validateCode(requestDto.getCurrencyCode());
         validateTableName(requestDto.getTableName());
