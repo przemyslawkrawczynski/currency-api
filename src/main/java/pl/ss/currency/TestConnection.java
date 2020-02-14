@@ -22,8 +22,7 @@ public class TestConnection {
 
     public static void main(String[] args) {
 
-        //XML
-    	
+        //Nbp - XML    	
         MapperProvider xmlMapperProvider = new XmlResponseFromNbpMapper();
         DataProvider dataProvider = new XmlFromNbpApiDataProvider();
         RequestValidator requestValidator = new CurrencyRequestValidator();

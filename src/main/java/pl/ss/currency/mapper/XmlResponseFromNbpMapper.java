@@ -25,7 +25,7 @@ public class XmlResponseFromNbpMapper implements MapperProvider {
 						.build();
 	}
 
-	public ExchangeRatesSeries mapFromXMLString(String XMLStringResponse) {
+	public ExchangeRatesSeries mapFromXMLString(String XMLStringResponse) throws NbpApiConnectionException {
 		
 		ExchangeRatesSeries exchangeRatesSeries;
 		
