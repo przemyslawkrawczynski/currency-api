@@ -7,11 +7,17 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+import pl.ss.currency.domain.Currency;
 import pl.ss.currency.domain.CurrencyInfo;
 import pl.ss.currency.dtos.response.ExchangeRatesSeries;
+import pl.ss.currency.dtos.response.RateDto;
 import pl.ss.currency.exception.NbpApiConnectionException;
 
-public class XmlResponseFromNbpMapper implements MapperProvider {
+@Service
+@Primary
+public class XmlResponseFromNbpCurrencyMapper implements CurrencyMapperProvider {
 
 	public CurrencyInfo mapToCurrencyInfo(String XMLStringResponse) {
 
@@ -44,6 +50,22 @@ public class XmlResponseFromNbpMapper implements MapperProvider {
 		return exchangeRatesSeries;
 		
 	}
-	
+
+	@Override
+	public Currency mapToCurrency(String XMLStringResponse) {
+		ExchangeRatesSeries exchangeRatesSeries = mapFromXMLString(XMLStringResponse);
+		RateDto rate = exchangeRatesSeries.getRates().getRate().get(0);
+
+		return new Currency(exchangeRatesSeries.getCode(), rate.getEffectiveDate(), exchangeRatesSeries.getTable(), rate.getMid(), exchangeRatesSeries.getCurrency());
+	}
+
+	public CurrencyInfo mapToCurrencyDto(Currency currency) {
+		return new CurrencyInfo.CurrencyInfoBuilder()
+				.setCheckingDate(currency.getCurrencyRateDate().toString())
+				.setCurrencyCode(currency.getCurrencyCode())
+				.setCurrencyRate(currency.getCurrencyRate())
+				.setCurrencyName(currency.getCurrencyDescription())
+				.build();
+	}
 
 }

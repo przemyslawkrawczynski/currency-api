@@ -1,11 +1,13 @@
 package pl.ss.currency.validator;
 
+import org.springframework.stereotype.Service;
 import pl.ss.currency.dtos.request.CurrencyRequest;
 import pl.ss.currency.exception.ValidationException;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
+@Service
 public class CurrencyRequestValidator implements RequestValidator {
 
     private final String[] currencyCodes = {"USD", "SEK", "EUR"};

@@ -1,6 +1,8 @@
 package pl.ss.currency.dataprovider;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 import pl.ss.currency.dataprovider.DataProvider;
 import pl.ss.currency.dtos.request.CurrencyRequest;
 import pl.ss.currency.exception.NbpApiConnectionException;
@@ -12,6 +14,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+@Service
+@Primary
 public class XmlFromNbpApiDataProvider implements DataProvider {
 
     private final String NBP_URL = "http://api.nbp.pl/api/exchangerates/rates/";

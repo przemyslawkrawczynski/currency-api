@@ -8,9 +8,11 @@ import pl.ss.currency.exception.ValidationException;
 import pl.ss.currency.validator.CurrencyRequestValidator;
 import pl.ss.currency.validator.RequestValidator;
 
-import static org.junit.Assert.assertThrows;
+
 
 import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValidatorTestSuits {
 	
