@@ -6,6 +6,7 @@ import pl.ss.currency.domain.Currency;
 import pl.ss.currency.domain.CurrencyInfo;
 import pl.ss.currency.dtos.request.CurrencyRequest;
 import pl.ss.currency.mapper.CurrencyMapperProvider;
+import pl.ss.currency.repository.CurrencyRepository;
 import pl.ss.currency.validator.RequestValidator;
 
 import java.time.LocalDate;
@@ -13,13 +14,13 @@ import java.time.LocalDate;
 @Service
 public class CurrencyService {
 
-    private final DatabaseService databaseService;
+    private final CurrencyRepository currencyRepository;
     private final DataProvider dataProvider;
     private final CurrencyMapperProvider currencyMapperProvider;
     private final RequestValidator requestValidator;
 
-    public CurrencyService(DatabaseService databaseService, DataProvider dataProvider, CurrencyMapperProvider currencyMapperProvider, RequestValidator requestValidator) {
-        this.databaseService = databaseService;
+    public CurrencyService(CurrencyRepository currencyRepository, DataProvider dataProvider, CurrencyMapperProvider currencyMapperProvider, RequestValidator requestValidator) {
+        this.currencyRepository = currencyRepository;
         this.dataProvider = dataProvider;
         this.currencyMapperProvider = currencyMapperProvider;
         this.requestValidator = requestValidator;
@@ -28,6 +29,18 @@ public class CurrencyService {
     public CurrencyInfo getCurrencyByRequest(CurrencyRequest currencyRequest) {
         requestValidator.validate(currencyRequest);
         return currencyMapperProvider.mapToCurrencyDto(getCurrencyActualData(currencyRequest));
+    }
+    
+    public Currency getCurrencyByLocalDateAndCode(LocalDate date, String currencyCode) {
+        return currencyRepository.getByCodeAndDate(date, currencyCode);
+    }
+
+    public boolean isExistByRequest(LocalDate date, String currencyCode) {
+        return currencyRepository.isExistByDateAndCurrencyCode(date, currencyCode) > 0;
+    }
+
+    public void updateCurrencyByDate(Currency currency) {
+        currencyRepository.save(currency);
     }
 
     public Currency getCurrencyActualData(CurrencyRequest request) {
@@ -39,13 +52,12 @@ public class CurrencyService {
 
 
         while (!foundResponse) {
-            if (databaseService.isExistByRequest(request.getOnDate(), request.getCurrencyCode())) {
-                currency = databaseService.getCurrencyByLocalDateAndCode(checkingDate, currencyCode);
+            if (isExistByRequest(request.getOnDate(), request.getCurrencyCode())) {
+                currency = getCurrencyByLocalDateAndCode(checkingDate, currencyCode);
                 foundResponse = true;
             } else {
                 if (update(request)) {
-                    System.out.println("Udało się pobrać dane z zewnątrz i dokonać update: " + request.getOnDate());
-                    currency = databaseService.getCurrencyByLocalDateAndCode(checkingDate, currencyCode);
+                    currency = getCurrencyByLocalDateAndCode(checkingDate, currencyCode);
                     foundResponse = true;
                 } else {
                     checkingDate = checkingDate.minusDays(1);
@@ -62,7 +74,7 @@ public class CurrencyService {
         String providerResponse = dataProvider.getCurrencyDataByRequest(request);
 
         if (dataProvider.getCurrencyDataByRequest(request) != null) {
-            databaseService.updateCurrencyByDate(currencyMapperProvider.mapToCurrency(providerResponse));
+            updateCurrencyByDate(currencyMapperProvider.mapToCurrency(providerResponse));
             return true;
         }
         return false;
