@@ -1,15 +1,18 @@
 package pl.ss.currency.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
+
 import pl.ss.currency.dataprovider.DataProvider;
 import pl.ss.currency.domain.Currency;
 import pl.ss.currency.domain.CurrencyInfo;
 import pl.ss.currency.dtos.request.CurrencyRequest;
+import pl.ss.currency.dtos.response.CurrencyRateDto;
 import pl.ss.currency.mapper.CurrencyMapperProvider;
 import pl.ss.currency.repository.CurrencyRepository;
 import pl.ss.currency.validator.RequestValidator;
-
-import java.time.LocalDate;
 
 @Service
 public class CurrencyService {
@@ -28,53 +31,72 @@ public class CurrencyService {
 
     public CurrencyInfo getCurrencyByRequest(CurrencyRequest currencyRequest) {
         requestValidator.validate(currencyRequest);
-        return currencyMapperProvider.mapToCurrencyDto(getCurrencyActualData(currencyRequest));
+        return currencyMapperProvider.mapToCurrencyInfo(getCurrencyActualData(currencyRequest));
     }
     
-    public Currency getCurrencyByLocalDateAndCode(LocalDate date, String currencyCode) {
-        return currencyRepository.getByCodeAndDate(date, currencyCode);
+    public CurrencyRateDto getCurrencyByLocalDateAndCode(LocalDate date, String currencyCode) {
+    	
+    	Object[] response = currencyRepository.getRateByCodeAndDate(date, currencyCode).get(0);
+    	
+    	Long currencyId = (Long) response[0];
+    	String code = (String) response[1];
+    	LocalDate currencyDate = (LocalDate) response[2];
+    	BigDecimal currencyRate = (BigDecimal) response[3];
+    	
+    	
+    	return new CurrencyRateDto(currencyId, code, currencyDate, currencyRate);
+    	
     }
 
     public boolean isExistByRequest(LocalDate date, String currencyCode) {
         return currencyRepository.isExistByDateAndCurrencyCode(date, currencyCode) > 0;
     }
 
-    public void updateCurrencyByDate(Currency currency) {
+    public void saveNew(Currency currency) {
         currencyRepository.save(currency);
     }
+    
+    public void updateByDateAndCode(LocalDate date, String code) {
+    	   	
+    	if (isExistByRequest(date, code)) {
+    		//Currency updatedCurrency = currencyRepository.getRateByCodeAndDate(date, code);
+    	}
+    }
 
-    public Currency getCurrencyActualData(CurrencyRequest request) {
+    public CurrencyRateDto getCurrencyActualData(CurrencyRequest request) {
 
-        Currency currency = null;
+        CurrencyRateDto currency = null;
         boolean foundResponse = false;
         String currencyCode = request.getCurrencyCode();
         LocalDate checkingDate = request.getOnDate();
+        
+        System.out.println(isExistByRequest(checkingDate, currencyCode));
+        System.out.println(getCurrencyActualData(request));
 
-
-        while (!foundResponse) {
-            if (isExistByRequest(request.getOnDate(), request.getCurrencyCode())) {
-                currency = getCurrencyByLocalDateAndCode(checkingDate, currencyCode);
-                foundResponse = true;
-            } else {
-                if (update(request)) {
-                    currency = getCurrencyByLocalDateAndCode(checkingDate, currencyCode);
-                    foundResponse = true;
-                } else {
-                    checkingDate = checkingDate.minusDays(1);
-                    System.out.println("Zmiana daty na: " + checkingDate);
-                }
-            }
-        }
+//        while (!foundResponse) {
+//            if (isExistByRequest(request.getOnDate(), request.getCurrencyCode())) {
+//                currency = getCurrencyByLocalDateAndCode(checkingDate, currencyCode);
+//                foundResponse = true;
+//            } else {
+//                if (updateMissingCurrencyInfoInDatabase(request)) {
+//                    currency = getCurrencyByLocalDateAndCode(checkingDate, currencyCode);
+//                    foundResponse = true;
+//                } else {
+//                    checkingDate = checkingDate.minusDays(1);
+//                    System.out.println("Zmiana daty na: " + checkingDate);
+//                }
+//            }
+//        }
 
         return currency;
     }
 
-    private boolean update(CurrencyRequest request) {
+    private boolean updateMissingCurrencyInfoInDatabase(CurrencyRequest request) {
 
         String providerResponse = dataProvider.getCurrencyDataByRequest(request);
 
         if (dataProvider.getCurrencyDataByRequest(request) != null) {
-            updateCurrencyByDate(currencyMapperProvider.mapToCurrency(providerResponse));
+            saveNew(currencyMapperProvider.mapToCurrency(providerResponse));
             return true;
         }
         return false;

@@ -1,15 +1,17 @@
 package pl.ss.currency;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-import pl.ss.currency.domain.Currency;
-import pl.ss.currency.domain.CurrencyInfo;
-import pl.ss.currency.dtos.request.CurrencyRequest;
-import pl.ss.currency.repository.CurrencyRepository;
-import pl.ss.currency.service.CurrencyService;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import pl.ss.currency.domain.Currency;
+import pl.ss.currency.domain.CurrencyRate;
+import pl.ss.currency.dtos.request.CurrencyRequest;
+import pl.ss.currency.dtos.response.CurrencyRateDto;
+import pl.ss.currency.repository.CurrencyRepository;
+import pl.ss.currency.service.CurrencyService;
 
 @Component
 public class CurrencyOnStartService implements CommandLineRunner {
@@ -25,16 +27,25 @@ public class CurrencyOnStartService implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        currencyRepository.save(new Currency("USD", "2020-02-16", "A", BigDecimal.TEN, "test desc"));
+        Currency currency = new Currency("USD", "A","test desc");
+        
+        
+        
+        currency.addNewRateByDate(new CurrencyRate(currency, LocalDate.parse("2020-02-18"), BigDecimal.valueOf(3.1265)));
+        currency.addNewRateByDate(new CurrencyRate(currency, LocalDate.parse("2020-02-17"), BigDecimal.valueOf(3.4565)));
+        currency.addNewRateByDate(new CurrencyRate(currency, LocalDate.parse("2020-02-14"), BigDecimal.valueOf(3.6565)));       
+        
+		currencyRepository.save(currency);
 
 
         CurrencyRequest currencyRequest = new CurrencyRequest.CurrencyRequestBuilder()
                 .currencyCode("USD")
-                .setDate(LocalDate.parse("2020-02-14"))
+                .setDate(LocalDate.parse("2020-02-18"))
                 .setTable("A")
                 .build();
 
-        CurrencyInfo currencyInfo = currencyService.getCurrencyByRequest(currencyRequest);
-        System.out.println("Wynik sprawdzenia: " + currencyInfo.toString());
+      CurrencyRateDto response = currencyService.getCurrencyByLocalDateAndCode(currencyRequest.getOnDate(), currency.getCurrencyCode());
+      System.out.println(currencyService.isExistByRequest(currencyRequest.getOnDate(), currency.getCurrencyCode()));
+      System.out.println("Wynik sprawdzenia: " + response.toString());
     }
 }

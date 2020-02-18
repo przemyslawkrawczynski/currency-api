@@ -1,13 +1,30 @@
 package pl.ss.currency.domain;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 @NamedQuery(name = "Currency.isExistByDateAndCurrencyCode",
-            query = "SELECT count(0) FROM Currency WHERE currencyRateDate LIKE :date AND currencyCode LIKE :code")
-@NamedQuery(name = "Currency.getByCodeAndDate",
-        query = "FROM Currency WHERE currencyRateDate LIKE :date AND currencyCode LIKE :code")
+            query = "SELECT count(0) from Currency c "
+            		+ "INNER JOIN CurrencyRate r "
+            		+ "ON r.currency.id = c.id "
+            		+ "WHERE c.currencyCode like :code "
+            		+ "AND r.rateDate like :date")
+
+@NamedQuery(name = "Currency.getRateByCodeAndDate",
+        query = "SELECT c.id, c.currencyCode, r.rateDate, r.rateValue from Currency c "
+        		+ "INNER JOIN CurrencyRate r "
+        		+ "ON r.currency.id = c.id "
+        		+ "WHERE c.currencyCode like :code "
+        		+ "AND r.rateDate like :date")
 
 @Entity
 public class Currency {
@@ -16,29 +33,33 @@ public class Currency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String currencyCode;
-    private LocalDate currencyRateDate;
     private String currencyTableOnNbp;
-    private BigDecimal currencyRate;
     private String currencyDescription;
+    
+    @OneToMany(
+            targetEntity = CurrencyRate.class,
+            mappedBy = "currency",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Set<CurrencyRate> rates;
 
-    public Currency(Long id, String currencyCode, LocalDate currencyRateDate, String currencyTableOnNbp, BigDecimal currencyRate, String currencyDescription) {
+    public Currency(Long id, String currencyCode, String currencyTableOnNbp,  String currencyDescription) {
         this.id = id;
         this.currencyCode = currencyCode;
-        this.currencyRateDate = currencyRateDate;
         this.currencyTableOnNbp = currencyTableOnNbp;
-        this.currencyRate = currencyRate;
         this.currencyDescription = currencyDescription;
+        this.rates = new HashSet<>();
     }
 
     public Currency() {
     }
 
-    public Currency(String currencyCode, String currencyRateDate, String currencyTableOnNbp, BigDecimal currencyRate, String currencyDescription) {
+    public Currency(String currencyCode, String currencyTableOnNbp, String currencyDescription) {
         this.currencyCode = currencyCode;
-        this.currencyRateDate = LocalDate.parse(currencyRateDate);
         this.currencyTableOnNbp = currencyTableOnNbp;
-        this.currencyRate = currencyRate;
         this.currencyDescription = currencyDescription;
+        this.rates = new HashSet<>();
     }
 
     public Long getId() {
@@ -57,13 +78,6 @@ public class Currency {
         this.currencyCode = currencyCode;
     }
 
-    public LocalDate getCurrencyRateDate() {
-        return currencyRateDate;
-    }
-
-    public void setCurrencyRateDate(LocalDate currencyRateDate) {
-        this.currencyRateDate = currencyRateDate;
-    }
 
     public String getCurrencyTableOnNbp() {
         return currencyTableOnNbp;
@@ -73,13 +87,6 @@ public class Currency {
         this.currencyTableOnNbp = currencyTableOnNbp;
     }
 
-    public BigDecimal getCurrencyRate() {
-        return currencyRate;
-    }
-
-    public void setCurrencyRate(BigDecimal currencyRate) {
-        this.currencyRate = currencyRate;
-    }
 
     public String getCurrencyDescription() {
         return currencyDescription;
@@ -88,4 +95,9 @@ public class Currency {
     public void setCurrencyDescription(String currencyDescription) {
         this.currencyDescription = currencyDescription;
     }
+    
+    public void addNewRateByDate(CurrencyRate currencyRate) {
+    	this.rates.add(currencyRate);
+    }
+    
 }

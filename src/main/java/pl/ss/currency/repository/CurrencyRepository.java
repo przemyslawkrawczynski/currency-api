@@ -1,11 +1,13 @@
 package pl.ss.currency.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import pl.ss.currency.domain.Currency;
 
-import java.time.LocalDate;
+import pl.ss.currency.domain.Currency;
 
 public interface CurrencyRepository extends CrudRepository<Currency, Long> {
 
@@ -13,5 +15,8 @@ public interface CurrencyRepository extends CrudRepository<Currency, Long> {
     long isExistByDateAndCurrencyCode(@Param("date")LocalDate date, @Param("code") String code);
 
     @Query
-    Currency getByCodeAndDate(@Param("date")LocalDate date, @Param("code") String code);
+    List<Object[]> getRateByCodeAndDate(@Param("date")LocalDate date, @Param("code") String code);
+    
+   
+    
 }

@@ -1,6 +1,7 @@
 package pl.ss.currency.dataprovider;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import pl.ss.currency.dataprovider.DataProvider;
@@ -20,6 +21,9 @@ public class XmlFromNbpApiDataProvider implements DataProvider {
 
     private final String NBP_URL = "http://api.nbp.pl/api/exchangerates/rates/";
     private final String RESPONSE_FORMAT = "?format=xml";
+    
+    @Value("{api.nbp.table}")
+    private String tableSoruceName;
 
     @Override
     public String getCurrencyDataByRequest(CurrencyRequest request) throws NbpApiConnectionException {
@@ -61,7 +65,7 @@ public class XmlFromNbpApiDataProvider implements DataProvider {
         URL url = null;
 
         try {
-            url = new URL(NBP_URL + request.getTableName() + "/" + request.getCurrencyCode() + "/"
+            url = new URL(NBP_URL + tableSoruceName + "/" + request.getCurrencyCode() + "/"
                     + request.getOnDate() + RESPONSE_FORMAT);
         } catch (MalformedURLException e) {
             throw new NbpApiConnectionException("Can`t prepare url from request data [Currency Code: "
