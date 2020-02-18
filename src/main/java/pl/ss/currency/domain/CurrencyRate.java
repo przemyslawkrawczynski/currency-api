@@ -3,12 +3,7 @@ package pl.ss.currency.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class CurrencyRate {
@@ -21,6 +16,7 @@ public class CurrencyRate {
     @JoinColumn(name = "currency_id")
 	private Currency currency;
 	private LocalDate rateDate;
+	@Column(precision = 5, scale = 4, columnDefinition = "DECIMAL(5,4)")
 	private BigDecimal rateValue;
 	
 	public CurrencyRate(Long id, Currency currency, LocalDate rateDate, BigDecimal rateValue) {
