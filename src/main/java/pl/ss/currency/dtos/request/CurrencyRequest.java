@@ -4,26 +4,22 @@ import java.time.LocalDate;
 
 public class CurrencyRequest {
 		
-    private String tableRequest;
     private String currencyCode;
     private LocalDate onDate;
        
-    public CurrencyRequest(String tableRequest, String currencyCode, LocalDate onDate) {
+    public CurrencyRequest(String currencyCode, LocalDate onDate) {
 		super();
-		this.tableRequest = tableRequest;
+
 		this.currencyCode = currencyCode;
 		this.onDate = onDate;
 	}
     
+    public CurrencyRequest() {}
+    
 	public static class CurrencyRequestBuilder {
-	    private String tableRequest;
+
 	    private String currencyCode;
 	    private LocalDate onDate;
-        
-        public CurrencyRequestBuilder setTable(String table) {
-        	this.tableRequest = table;
-        	return this;
-        }
         
         public CurrencyRequestBuilder currencyCode(String code) {
         	this.currencyCode = code;
@@ -36,7 +32,7 @@ public class CurrencyRequest {
         }
         
         public CurrencyRequest build() {
-        	return new CurrencyRequest(tableRequest, currencyCode, onDate);
+        	return new CurrencyRequest(currencyCode, onDate);
         }
     }
     
@@ -44,12 +40,17 @@ public class CurrencyRequest {
 		return currencyCode;
 	}
 	
-	public String getTableName() {
-		return tableRequest;
-	}
 
 	public LocalDate getOnDate() {
 		return onDate;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public void setOnDate(LocalDate onDate) {
+		this.onDate = onDate;
 	}
 	
 	

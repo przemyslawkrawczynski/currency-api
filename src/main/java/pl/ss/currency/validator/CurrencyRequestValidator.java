@@ -11,7 +11,6 @@ import java.util.Arrays;
 public class CurrencyRequestValidator implements RequestValidator {
 
     private final String[] currencyCodes = {"USD", "SEK", "EUR"};
-    private final String[] tables = {"A", "B", "C"};
 
     private void validateCode(String code) {
         if (!Arrays.asList(currencyCodes).contains(code)) {
@@ -19,12 +18,6 @@ public class CurrencyRequestValidator implements RequestValidator {
         }
     }
 
-    private void validateTableName(String tableName) {
-        if (!Arrays.asList(tables).contains(tableName)) {
-            throw new ValidationException("Wrong argument tableName: " + tableName);
-        }
-        ;
-    }
 
     private void validateDate(LocalDate localDate) {
     	if (localDate == null) { 
@@ -40,8 +33,6 @@ public class CurrencyRequestValidator implements RequestValidator {
     public void validate(CurrencyRequest requestDto) throws ValidationException {
         validateDate(requestDto.getOnDate());
         validateCode(requestDto.getCurrencyCode());
-        validateTableName(requestDto.getTableName());
-
     }
 
 }

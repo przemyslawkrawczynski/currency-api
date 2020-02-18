@@ -22,7 +22,7 @@ public class XmlFromNbpApiDataProvider implements DataProvider {
     private final String NBP_URL = "http://api.nbp.pl/api/exchangerates/rates/";
     private final String RESPONSE_FORMAT = "?format=xml";
     
-    @Value("{api.nbp.table}")
+    @Value("${api.nbp.table}")
     private String tableSoruceName;
 
     @Override

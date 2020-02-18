@@ -2,8 +2,8 @@ package pl.ss.currency.api;
 
 import org.springframework.stereotype.Service;
 import pl.ss.currency.dataprovider.DataProvider;
-import pl.ss.currency.domain.CurrencyInfo;
 import pl.ss.currency.dtos.request.CurrencyRequest;
+import pl.ss.currency.dtos.response.CurrencyInfo;
 import pl.ss.currency.validator.RequestValidator;
 import pl.ss.currency.mapper.CurrencyMapperProvider;
 
@@ -55,7 +55,6 @@ public class CurrencyFromNbpXMLProvider implements CurrencyProvider {
     private CurrencyRequest prepareNewRequest(CurrencyRequest currencyRequest) {
         return new CurrencyRequest.CurrencyRequestBuilder()
                 .currencyCode(currencyRequest.getCurrencyCode())
-                .setTable(currencyRequest.getTableName())
                 .setDate(currencyRequest.getOnDate().minusDays(1))
                 .build();
     }

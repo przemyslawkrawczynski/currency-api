@@ -12,11 +12,13 @@ import pl.ss.currency.domain.Currency;
 public interface CurrencyRepository extends CrudRepository<Currency, Long> {
 
     @Query
-    long isExistByDateAndCurrencyCode(@Param("date")LocalDate date, @Param("code") String code);
+    Long isExistByDateAndCurrencyCode(@Param("date")LocalDate date, @Param("code") String code);
 
     @Query
     List<Object[]> getRateByCodeAndDate(@Param("date")LocalDate date, @Param("code") String code);
     
+    @Query
+    Long getIdByCodeName(@Param("code") String code);
    
     
 }

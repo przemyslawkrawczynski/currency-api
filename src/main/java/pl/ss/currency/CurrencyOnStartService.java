@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import pl.ss.currency.domain.Currency;
 import pl.ss.currency.domain.CurrencyRate;
-import pl.ss.currency.dtos.request.CurrencyRequest;
-import pl.ss.currency.dtos.response.CurrencyRateDto;
 import pl.ss.currency.repository.CurrencyRepository;
 import pl.ss.currency.service.CurrencyService;
 
@@ -38,14 +36,5 @@ public class CurrencyOnStartService implements CommandLineRunner {
 		currencyRepository.save(currency);
 
 
-        CurrencyRequest currencyRequest = new CurrencyRequest.CurrencyRequestBuilder()
-                .currencyCode("USD")
-                .setDate(LocalDate.parse("2020-02-18"))
-                .setTable("A")
-                .build();
-
-      CurrencyRateDto response = currencyService.getCurrencyByLocalDateAndCode(currencyRequest.getOnDate(), currency.getCurrencyCode());
-      System.out.println(currencyService.isExistByRequest(currencyRequest.getOnDate(), currency.getCurrencyCode()));
-      System.out.println("Wynik sprawdzenia: " + response.toString());
     }
 }

@@ -1,6 +1,9 @@
 package pl.ss.currency.domain;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,6 +28,10 @@ import javax.persistence.OneToMany;
         		+ "ON r.currency.id = c.id "
         		+ "WHERE c.currencyCode like :code "
         		+ "AND r.rateDate like :date")
+
+@NamedQuery(name = "Currency.getIdByCodeName",
+query = "SELECT id from Currency c "
+		+ "WHERE c.currencyCode like :code")
 
 @Entity
 public class Currency {
@@ -98,6 +105,13 @@ public class Currency {
     
     public void addNewRateByDate(CurrencyRate currencyRate) {
     	this.rates.add(currencyRate);
+    }
+    
+    public Optional<BigDecimal> getRateByDate(LocalDate date) {
+    	return rates.stream()
+    			.filter(rate -> rate.getRateDate().equals(date))
+    			.map(rate -> rate.getRateValue())
+    			.findFirst();
     }
     
 }

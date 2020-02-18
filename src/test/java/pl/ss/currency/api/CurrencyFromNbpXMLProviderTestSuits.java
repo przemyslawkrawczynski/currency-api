@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 import pl.ss.currency.dataprovider.DataProvider;
-import pl.ss.currency.domain.CurrencyInfo;
 import pl.ss.currency.dtos.request.CurrencyRequest;
+import pl.ss.currency.dtos.response.CurrencyInfo;
 import pl.ss.currency.mapper.CurrencyMapperProvider;
 import pl.ss.currency.validator.RequestValidator;
 

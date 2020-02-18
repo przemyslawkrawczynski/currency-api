@@ -22,7 +22,7 @@ public class XmlFromNbpApiDataProviderTestSuits {
 		LocalDate requestDateOnDayOtherThanSaturdayAndSunday = LocalDate.of(2020, 02, 13);
 
 		CurrencyRequest preparedRequest = new CurrencyRequest.CurrencyRequestBuilder().currencyCode(requestCurrencyCode)
-				.setDate(requestDateOnDayOtherThanSaturdayAndSunday).setTable(requestTable).build();
+				.setDate(requestDateOnDayOtherThanSaturdayAndSunday).build();
 
 		// When
 		String response = dataProvider.getCurrencyDataByRequest(preparedRequest);
@@ -41,7 +41,7 @@ public class XmlFromNbpApiDataProviderTestSuits {
 		LocalDate requestDateOnSaturdayInPast = LocalDate.of(2020, 02, 8);
 
 		CurrencyRequest preparedRequest = new CurrencyRequest.CurrencyRequestBuilder().currencyCode(requestCurrencyCode)
-				.setDate(requestDateOnSaturdayInPast).setTable(requestTable).build();
+				.setDate(requestDateOnSaturdayInPast).build();
 
 		// When
 		String response = dataProvider.getCurrencyDataByRequest(preparedRequest);

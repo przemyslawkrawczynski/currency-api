@@ -11,8 +11,8 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import pl.ss.currency.domain.Currency;
-import pl.ss.currency.domain.CurrencyInfo;
 import pl.ss.currency.domain.CurrencyRate;
+import pl.ss.currency.dtos.response.CurrencyInfo;
 import pl.ss.currency.dtos.response.CurrencyRateDto;
 import pl.ss.currency.dtos.response.ExchangeRatesSeries;
 import pl.ss.currency.dtos.response.RateDto;
@@ -27,7 +27,6 @@ public class XmlResponseFromNbpCurrencyMapper implements CurrencyMapperProvider 
 		ExchangeRatesSeries exchangeRatesSeries = mapFromXMLString(XMLStringResponse);
 
 		return new CurrencyInfo.CurrencyInfoBuilder()
-						.setCurrencyName(exchangeRatesSeries.getCurrency())
 						.setCheckingDate(exchangeRatesSeries.getRates().getRate().get(0).getEffectiveDate())
 						.setCurrencyCode(exchangeRatesSeries.getCode())
 						.setCurrencyRate(exchangeRatesSeries.getRates().getRate().get(0).getMid())
