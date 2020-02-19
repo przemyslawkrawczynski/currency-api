@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import pl.ss.currency.dataprovider.DataProvider;
 import pl.ss.currency.domain.Currency;
 import pl.ss.currency.domain.CurrencyRate;
-import pl.ss.currency.dtos.response.RateDto;
 import pl.ss.currency.exception.NbpApiConnectionException;
 import pl.ss.currency.mapper.CurrencyMapperProvider;
 import pl.ss.currency.repository.CurrencyRateRepository;

@@ -1,5 +1,6 @@
 package pl.ss.currency.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -28,5 +29,36 @@ public interface CurrencyRateRepository extends CrudRepository<CurrencyRate, Lon
 			"where rate_date like :date\r\n" + 
 			"AND currency_id = (select c.id FROM CURRENCY c WHERE CURRENCY_CODE like :currencyCode)", nativeQuery = true)
 	Optional<CurrencyRate> getRateByCurrencyCodeAndDate(@Param("date") LocalDate date, @Param("currencyCode") String currencyCode);
-
+	
+	@Query(value = "SELECT RATE_DATE , min(RATE_VALUE) \r\n" + 
+			"FROM CURRENCY_RATE \r\n" + 
+			"WHERE RATE_DATE between :dateFrom AND :dateTo\r\n" + 
+			"AND CURRENCY_ID  =\r\n" + 
+			"(SELECT c.id FROM CURRENCY c WHERE CURRENCY_CODE LIKE :currencyCode)", nativeQuery = true)
+	List<Object[]> getMinValueByCodeAndDateRange(@Param("currencyCode") String currencyCode, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	
+	@Query(value = "SELECT RATE_DATE , min(RATE_VALUE) \r\n" + 
+			"FROM CURRENCY_RATE \r\n" + 
+			"WHERE RATE_DATE between :dateFrom AND :dateTo\r\n" + 
+			"AND CURRENCY_ID  =\r\n" + 
+			"(SELECT c.id FROM CURRENCY c WHERE CURRENCY_CODE LIKE :currencyCode)", nativeQuery = true)
+	List<Object[]> getMaxValueByCodeAndDateRange(@Param("currencyCode") String currencyCode, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	
+	@Query(value = "SELECT *" + 
+			"FROM CURRENCY_RATE " + 
+			"WHERE CURRENCY_ID  =" + 
+			"(SELECT c.id FROM CURRENCY c WHERE CURRENCY_CODE LIKE :currencyCode)" + 
+			"ORDER BY RATE_VALUE DESC" + 
+			"Limit 5", nativeQuery = true)
+	List<CurrencyRate> get5BestRatesByCode(@Param("currencyCode") String currencyCode);
+	
+	@Query(value = "SELECT *" + 
+			"FROM CURRENCY_RATE " + 
+			"WHERE CURRENCY_ID  =" + 
+			"(SELECT c.id FROM CURRENCY c WHERE CURRENCY_CODE LIKE :currencyCode)" + 
+			"ORDER BY RATE_VALUE ASC" + 
+			"Limit 5", nativeQuery = true)
+	List<CurrencyRate> get5LowestRatesByCode(@Param("currencyCode") String currencyCode);
+	
+	
 }
