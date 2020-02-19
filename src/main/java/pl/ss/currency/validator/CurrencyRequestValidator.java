@@ -10,9 +10,9 @@ import java.util.Arrays;
 @Service
 public class CurrencyRequestValidator implements RequestValidator {
 
-    private final String[] currencyCodes = {"USD", "SEK", "EUR"};
+    private final String[] currencyCodes = {"USD", "SEK", "EURO", "CHF"};
 
-    private void validateCode(String code) {
+    public void validateCode(String code) {
         if (!Arrays.asList(currencyCodes).contains(code)) {
             throw new ValidationException("Wrong argument CurrencyCode: " + code);
         }

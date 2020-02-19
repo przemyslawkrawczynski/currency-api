@@ -3,7 +3,15 @@ package pl.ss.currency.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class CurrencyRate {
@@ -14,6 +22,7 @@ public class CurrencyRate {
 	
 	@ManyToOne
     @JoinColumn(name = "currency_id")
+	@JsonBackReference
 	private Currency currency;
 	private LocalDate rateDate;
 	@Column(precision = 5, scale = 4, columnDefinition = "DECIMAL(5,4)")

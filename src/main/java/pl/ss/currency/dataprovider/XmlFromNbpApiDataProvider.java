@@ -14,66 +14,93 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 
 @Service
 @Primary
 public class XmlFromNbpApiDataProvider implements DataProvider {
 
-    private final String NBP_URL = "http://api.nbp.pl/api/exchangerates/rates/";
-    private final String RESPONSE_FORMAT = "?format=xml";
-    
-    @Value("${api.nbp.table}")
-    private String tableSoruceName;
+	private final String NBP_URL = "http://api.nbp.pl/api/exchangerates/rates/";
+	private final String RESPONSE_FORMAT = "?format=xml";
 
-    @Override
-    public String getCurrencyDataByRequest(CurrencyRequest request) throws NbpApiConnectionException {
+	@Value("${api.nbp.table}")
+	private String tableSoruceName;
 
-        HttpURLConnection connection = null;
-        String currencyDataResponse;
+	@Override
+	public String getCurrencyDataByRequest(CurrencyRequest request) throws NbpApiConnectionException {
+		URL urlFromRequest = generateUrlFromCurrencyRequest(request);
+		return getDataFromApi(urlFromRequest);
 
-        try {
-            connection = (HttpURLConnection) generateUrlFromCurrencyRequest(request).openConnection();
-            if (isCorrectApiResponse(connection) == false) return null;
-        } catch (IOException ex) {
-            throw new NbpApiConnectionException("Can't connect to NBP Api.");
-        }
+	}
+	
+	public String getCurrencyDataByRangeDateAndCurrencyCode(String currencyCode, LocalDate dateFrom, LocalDate dateTo) {
+		URL urlForRangeAndCodeUrl = generateUrlFforDataRangeAndCurrencyCode(currencyCode, dateFrom, dateTo);
+		return getDataFromApi(urlForRangeAndCodeUrl);
+	}
 
-        try {
-            InputStream currencyStream = connection.getInputStream();
-            currencyDataResponse = IOUtils.toString(currencyStream, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new NbpApiConnectionException("Can't parse response from NBP Api!");
-        } finally {
-            connection.disconnect();
-        }
+	public String getDataFromApi(URL preparedUrl) {
 
-        return currencyDataResponse;
-    }
+		HttpURLConnection connection = null;
+		String currencyDataResponse;
 
-    private boolean isCorrectApiResponse(HttpURLConnection connection) throws IOException {
-        int status = connection.getResponseCode();
-        if (status != 200 && status != 304 && status != 404) {
-            String msg = (status == 403) ? "Nbp Api returns 403: Bad Request" : "NBP Server exception - server return code: " + status;
-            throw new NbpApiConnectionException(msg);
-        }
+		try {
+			connection = (HttpURLConnection) preparedUrl.openConnection();
+			if (isCorrectApiResponse(connection) == false)
+				return null;
+		} catch (IOException ex) {
+			throw new NbpApiConnectionException("Can't connect to NBP Api.");
+		}
 
-        return (status != 404);
-    }
+		try {
+			InputStream currencyStream = connection.getInputStream();
+			currencyDataResponse = IOUtils.toString(currencyStream, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			throw new NbpApiConnectionException("Can't parse response from NBP Api!");
+		} finally {
+			connection.disconnect();
+		}
 
-    private URL generateUrlFromCurrencyRequest(CurrencyRequest request) {
+		return currencyDataResponse;
+	}
 
-        URL url = null;
+	private boolean isCorrectApiResponse(HttpURLConnection connection) throws IOException {
+		int status = connection.getResponseCode();
+		if (status != 200 && status != 304 && status != 404) {
+			String msg = (status == 403) ? "Nbp Api returns 403: Bad Request"
+					: "NBP Server exception - server return code: " + status;
+			throw new NbpApiConnectionException(msg);
+		}
 
-        try {
-            url = new URL(NBP_URL + tableSoruceName + "/" + request.getCurrencyCode() + "/"
-                    + request.getOnDate() + RESPONSE_FORMAT);
-        } catch (MalformedURLException e) {
-            throw new NbpApiConnectionException("Can`t prepare url from request data [Currency Code: "
-                    + request.getCurrencyCode() + "] [Date: " + request.getOnDate());
-        }
+		return (status != 404);
+	}
 
-        return url;
-    }
+	private URL generateUrlFromCurrencyRequest(CurrencyRequest request) {
+
+		URL url = null;
+
+		try {
+			url = new URL(NBP_URL + tableSoruceName + "/" + request.getCurrencyCode() + "/" + request.getOnDate()
+					+ RESPONSE_FORMAT);
+		} catch (MalformedURLException e) {
+			throw new NbpApiConnectionException("Can`t prepare url from request data [Currency Code: "
+					+ request.getCurrencyCode() + "] [Date: " + request.getOnDate());
+		}
+
+		return url;
+	}
+	
+	private URL generateUrlFforDataRangeAndCurrencyCode(String code, LocalDate dateFrom, LocalDate dateTo) {
+
+		URL url = null;
+
+		try {
+			url = new URL(NBP_URL + tableSoruceName + "/" + code + "/" + dateFrom.toString() + "/" + dateTo.toString()
+					+ RESPONSE_FORMAT);
+		} catch (MalformedURLException e) {
+			throw new NbpApiConnectionException("Can`t prepare url from range of dates [Currency Code: "
+					+ code + "] [Date: " + dateFrom + "/" + dateTo );
+		}
+
+		return url;
+	}
 }
-
-

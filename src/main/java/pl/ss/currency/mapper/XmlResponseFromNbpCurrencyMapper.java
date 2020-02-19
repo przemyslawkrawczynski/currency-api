@@ -2,6 +2,8 @@ package pl.ss.currency.mapper;
 
 import java.io.StringReader;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -54,7 +56,7 @@ public class XmlResponseFromNbpCurrencyMapper implements CurrencyMapperProvider 
 	}
 
 	@Override
-	public Currency mapToCurrency(String XMLStringResponse) {
+	public Currency mapToCurrencyWithSingleDateRate(String XMLStringResponse) {
 		ExchangeRatesSeries exchangeRatesSeries = mapFromXMLString(XMLStringResponse);
 		RateDto rate = exchangeRatesSeries.getRates().getRate().get(0);
 		Currency currencyUpdated = new Currency(exchangeRatesSeries.getCode(), exchangeRatesSeries.getTable(), exchangeRatesSeries.getCurrency());
@@ -68,6 +70,18 @@ public class XmlResponseFromNbpCurrencyMapper implements CurrencyMapperProvider 
 				.setCurrencyCode(currency.getCurrencyCode())
 				.setCurrencyRate(currency.getRate())
 				.build();
+	}
+
+	@Override
+	public Currency mapToCurrencyWithRateList(String XMLStringResponse) {
+		
+		ExchangeRatesSeries exchangeRatesSeries = mapFromXMLString(XMLStringResponse);
+		Currency currencyUpdated = new Currency(exchangeRatesSeries.getCode(), exchangeRatesSeries.getTable(), exchangeRatesSeries.getCurrency());
+		
+		exchangeRatesSeries.getRates().getRate().stream()
+				.forEach(rate -> currencyUpdated.addNewRateByDate(new CurrencyRate(currencyUpdated, LocalDate.parse(rate.getEffectiveDate()), rate.getMid())));				
+		
+		return currencyUpdated;
 	}
 
 

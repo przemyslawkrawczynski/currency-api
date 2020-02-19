@@ -2,8 +2,7 @@ package pl.ss.currency.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,9 @@ import pl.ss.currency.domain.CurrencyRate;
 import pl.ss.currency.dtos.request.CurrencyRequest;
 import pl.ss.currency.dtos.response.CurrencyInfo;
 import pl.ss.currency.dtos.response.CurrencyRateDto;
+import pl.ss.currency.exception.DataValueException;
 import pl.ss.currency.mapper.CurrencyMapperProvider;
+import pl.ss.currency.repository.CurrencyRateRepository;
 import pl.ss.currency.repository.CurrencyRepository;
 import pl.ss.currency.validator.RequestValidator;
 
@@ -21,13 +22,16 @@ import pl.ss.currency.validator.RequestValidator;
 public class CurrencyService {
 
 	private final CurrencyRepository currencyRepository;
+	private final CurrencyRateRepository currencRateRepository;
 	private final DataProvider dataProvider;
 	private final CurrencyMapperProvider currencyMapperProvider;
 	private final RequestValidator requestValidator;
 
-	public CurrencyService(CurrencyRepository currencyRepository, DataProvider dataProvider,
-			CurrencyMapperProvider currencyMapperProvider, RequestValidator requestValidator) {
+	public CurrencyService(CurrencyRepository currencyRepository, CurrencyRateRepository currencRateRepository,
+			DataProvider dataProvider, CurrencyMapperProvider currencyMapperProvider,
+			RequestValidator requestValidator) {
 		this.currencyRepository = currencyRepository;
+		this.currencRateRepository = currencRateRepository;
 		this.dataProvider = dataProvider;
 		this.currencyMapperProvider = currencyMapperProvider;
 		this.requestValidator = requestValidator;
@@ -45,7 +49,7 @@ public class CurrencyService {
 		Long currencyId = (Long) response[0];
 		String code = (String) response[1];
 		LocalDate currencyDate = (LocalDate) response[2];
-		BigDecimal currencyRate = (BigDecimal) response[3];
+		BigDecimal currencyRate = new BigDecimal((String) response[3]);
 
 		return new CurrencyRateDto(currencyId, code, currencyDate, currencyRate);
 
@@ -55,7 +59,7 @@ public class CurrencyService {
 		return currencyRepository.isExistByDateAndCurrencyCode(date, currencyCode) > 0;
 	}
 
-	public Long isExistByCode(String currencyCode) {
+	public Long ifExistGetCurrencyId(String currencyCode) {
 		Long idCurrencyCode = currencyRepository.getIdByCodeName(currencyCode);
 		return idCurrencyCode;
 		
@@ -65,11 +69,25 @@ public class CurrencyService {
 		currencyRepository.save(currency);
 	}
 
-	public void updateByDateAndCode(LocalDate date, String code) {
+	public void updateRateByDateAndCode(LocalDate date, String currencyCode, BigDecimal newValue) throws DataValueException {
 
-		if (isExistByRequest(date, code)) {
-			// Currency updatedCurrency = currencyRepository.getRateByCodeAndDate(date,
-			// code);
+		Optional<CurrencyRate> opt = currencRateRepository.getRateByCurrencyCodeAndDate(date, currencyCode);
+		if (opt.isPresent()) {
+			CurrencyRate updatedRate = opt.get();
+			updatedRate.setRateValue(newValue);
+			currencRateRepository.save(updatedRate);
+		} else {
+			throw new DataValueException("Couldn`t find Rate for: " + currencyCode + " and " + date);
+		}
+	}
+	
+	public void deleteCurrencyRateByCodeAndDate(LocalDate date, String currencyCode) {
+		Optional<CurrencyRate> opt = currencRateRepository.getRateByCurrencyCodeAndDate(date, currencyCode);
+		if (opt.isPresent()) {
+			CurrencyRate updatedRate = opt.get();
+			currencRateRepository.delete(updatedRate);
+		} else {
+			throw new DataValueException("Couldn`t find Rate for: " + currencyCode + " and " + date);
 		}
 	}
 
@@ -102,26 +120,21 @@ public class CurrencyService {
 	private boolean updateMissingCurrencyInfoInDatabase(CurrencyRequest request) {
 
 		String providerResponse = dataProvider.getCurrencyDataByRequest(request);		
-
 		if (providerResponse == null) return false;
 		
-		Currency responseFromProvider = currencyMapperProvider.mapToCurrency(providerResponse);
-		Long currencyId = isExistByCode(request.getCurrencyCode());
+		Currency responseFromProvider = currencyMapperProvider.mapToCurrencyWithSingleDateRate(providerResponse);
+		Long currencyId = ifExistGetCurrencyId(request.getCurrencyCode());
 
 		if (currencyId != null) {
-
 			Currency currency = currencyRepository.findById(currencyId).get();
 			BigDecimal rateValue = responseFromProvider.getRateByDate(request.getOnDate()).get();
 			currency.addNewRateByDate(new CurrencyRate(currency, request.getOnDate(), rateValue));
 			currencyRepository.save(currency);
 			return true;
-
 		} else {
-
-			saveNew(currencyMapperProvider.mapToCurrency(providerResponse));
+			saveNew(currencyMapperProvider.mapToCurrencyWithSingleDateRate(providerResponse));
 			return true;
 		}
-
 	}
 
 }

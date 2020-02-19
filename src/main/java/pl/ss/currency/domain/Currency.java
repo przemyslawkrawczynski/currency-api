@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @NamedQuery(name = "Currency.isExistByDateAndCurrencyCode",
             query = "SELECT count(0) from Currency c "
             		+ "INNER JOIN CurrencyRate r "
@@ -49,6 +51,7 @@ public class Currency {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
+    @JsonManagedReference
     private Set<CurrencyRate> rates;
 
     public Currency(Long id, String currencyCode, String currencyTableOnNbp,  String currencyDescription) {
@@ -113,5 +116,16 @@ public class Currency {
     			.map(rate -> rate.getRateValue())
     			.findFirst();
     }
+
+	public Set<CurrencyRate> getRates() {
+		return rates;
+	}
+
+	public void setRates(Set<CurrencyRate> rates) {
+		this.rates = rates;
+	}
+    
+	
+    
     
 }
