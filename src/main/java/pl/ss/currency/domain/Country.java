@@ -1,11 +1,9 @@
 package pl.ss.currency.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Country {
@@ -13,18 +11,49 @@ public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String countryCode;
     private String countryName;
     
-    @ManyToMany
-    private Set<Currency> currency;
-	public Country(Long id, String countryCode, String countryName, Set<Currency> currency) {
-		super();
+//    @ManyToMany(mappedBy = "countrys")
+//    private Set<Currency> currencySet;
+
+    public Country() {}
+
+    public Country(Long id, String countryName, Set<Currency> currencySet) {
 		this.id = id;
-		this.countryCode = countryCode;
 		this.countryName = countryName;
-		this.currency = currency;
+	//	this.currencySet = currencySet;
 	}
-	
-    
+
+    public Country(String countryName) {
+        this.countryName = countryName;
+  //      this.currencySet = new HashSet<>();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+//    public Set<Currency> getCurrencySet() {
+//        return currencySet;
+//    }
+//
+//    public void addCurrency(Currency currency) {
+//        this.currencySet.add(currency);
+//    }
+//
+//    public void setCurrencySet(Set<Currency> currencySet) {
+//        this.currencySet = currencySet;
+//    }
 }

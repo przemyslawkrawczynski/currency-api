@@ -34,6 +34,9 @@ public class CurrencyOnStartService implements CommandLineRunner {
         Currency currency = new Currency("USD", "A","Dolar amerykański");
         Random random  = new Random();
 
+
+
+
         List<CurrencyRate> currencyList = new ArrayList<>();
 
         LocalDate date = LocalDate.now();
