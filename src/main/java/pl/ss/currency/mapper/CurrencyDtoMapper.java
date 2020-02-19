@@ -1,6 +1,7 @@
 package pl.ss.currency.mapper;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,10 +31,11 @@ public class CurrencyDtoMapper {
 	
 	public CurrencyRateValueDto mapFromMinOrMaxValueResult(Object[] resposne, String currencyCode) {
 		
-		LocalDate date = (LocalDate) resposne[0];
+		Date date = (Date) resposne[0];
+		LocalDate dateResult = date.toLocalDate();
 		BigDecimal value = (BigDecimal) resposne[1];
 		
-		return new CurrencyRateValueDto(currencyCode, date, value);
+		return new CurrencyRateValueDto(currencyCode, dateResult, value);
 		
 	}
 	public List<CurrencyRateValueDto> mapToCurrencyRateValueDtosFromCurrancyRates(List<CurrencyRate> list) {
