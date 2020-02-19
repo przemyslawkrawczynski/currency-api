@@ -25,7 +25,6 @@ public class CountryImportService {
         for (CSVRecord record : records) {
             String columnOne = record.get(0);
             String columnTwo = record.get(1);
-            System.out.println(columnOne + " | " + columnTwo);
         }
 
         return null;

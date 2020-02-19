@@ -46,8 +46,8 @@ public class Currency {
     )
     @JsonManagedReference
     private Set<CurrencyRate> rates;
-//    @ManyToMany
-//    private Set<Country> countrys;
+    @ManyToMany
+    private Set<Country> countrySet;
 
     public Currency(Long id, String currencyCode, String currencyTableOnNbp,  String currencyDescription) {
         this.id = id;
@@ -65,6 +65,7 @@ public class Currency {
         this.currencyTableOnNbp = currencyTableOnNbp;
         this.currencyDescription = currencyDescription;
         this.rates = new HashSet<>();
+        this.countrySet = new HashSet<>();
     }
 
     public Long getId() {
@@ -120,7 +121,9 @@ public class Currency {
 		this.rates = rates;
 	}
     
-	
+	public void addCountry(Country country) {
+        this.countrySet.add(country);
+    }
     
     
 }

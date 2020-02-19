@@ -13,20 +13,20 @@ public class Country {
     private Long id;
     private String countryName;
     
-//    @ManyToMany(mappedBy = "countrys")
-//    private Set<Currency> currencySet;
+    @ManyToMany(mappedBy = "countrySet")
+    private Set<Currency> currencySet;
 
     public Country() {}
 
     public Country(Long id, String countryName, Set<Currency> currencySet) {
 		this.id = id;
 		this.countryName = countryName;
-	//	this.currencySet = currencySet;
+		this.currencySet = currencySet;
 	}
 
     public Country(String countryName) {
         this.countryName = countryName;
-  //      this.currencySet = new HashSet<>();
+        this.currencySet = new HashSet<>();
     }
 
     public Long getId() {
