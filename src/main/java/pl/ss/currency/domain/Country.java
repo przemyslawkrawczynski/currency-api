@@ -3,7 +3,13 @@ package pl.ss.currency.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+
 
 @Entity
 public class Country {
@@ -13,7 +19,8 @@ public class Country {
     private Long id;
     private String countryName;
     
-    @ManyToMany(mappedBy = "countrySet")
+    @ManyToMany(mappedBy = "countrySet", fetch = FetchType.EAGER)
+    
     private Set<Currency> currencySet;
 
     public Country() {}
@@ -45,15 +52,17 @@ public class Country {
         this.countryName = countryName;
     }
 
-//    public Set<Currency> getCurrencySet() {
-//        return currencySet;
-//    }
-//
-//    public void addCurrency(Currency currency) {
-//        this.currencySet.add(currency);
-//    }
-//
-//    public void setCurrencySet(Set<Currency> currencySet) {
-//        this.currencySet = currencySet;
-//    }
+    public Set<Currency> getCurrencySet() {
+        return currencySet;
+    }
+
+    public void addCurrency(Currency currency) {
+        this.currencySet.add(currency);
+    }
+
+    public void setCurrencySet(Set<Currency> currencySet) {
+        this.currencySet = currencySet;
+    }
+    
+    
 }

@@ -41,11 +41,12 @@ public class Currency {
     @OneToMany(
             targetEntity = CurrencyRate.class,
             mappedBy = "currency",
-            cascade = CascadeType.ALL,
+            cascade = { CascadeType.MERGE, CascadeType.PERSIST },
             fetch = FetchType.LAZY
     )
     @JsonManagedReference
     private Set<CurrencyRate> rates;
+    
     @ManyToMany
     private Set<Country> countrySet;
 

@@ -42,37 +42,52 @@ public class CurrencyService {
 		return currencyMapperProvider.mapToCurrencyInfo(getCurrencyActualData(currencyRequest));
 	}
 
-	public CurrencyRateDto getCurrencyByLocalDateAndCode(LocalDate date, String currencyCode) {
+	private CurrencyRateDto getCurrencyByLocalDateAndCode(LocalDate date, String currencyCode) {
 
 		Object[] response = currencyRepository.getRateByCodeAndDate(date, currencyCode).get(0);
 
 		Long currencyId = (Long) response[0];
 		String code = (String) response[1];
 		LocalDate currencyDate = (LocalDate) response[2];
-		BigDecimal currencyRate = new BigDecimal((String) response[3]);
+		BigDecimal currencyRate = (BigDecimal) response[3];
 
 		return new CurrencyRateDto(currencyId, code, currencyDate, currencyRate);
 
 	}
-
-	public boolean isExistByRequest(LocalDate date, String currencyCode) {
-		return currencyRepository.isExistByDateAndCurrencyCode(date, currencyCode) > 0;
-	}
-
-	public Long ifExistGetCurrencyId(String currencyCode) {
-		Long idCurrencyCode = currencyRepository.getIdByCodeName(currencyCode);
-		return idCurrencyCode;
+	
+	public void deleteCurrencyById(Long id) {
 		
-	}
+		Optional<Currency> opt = currencyRepository.findById(id);
+		
+		if (opt.isPresent()) {
+			currencyRepository.delete(opt.get());
+		} else {
+			throw new DataValueException("Couldn`t find currency by Id: " + id);
+		}
 
-	public void saveNew(Currency currency) {
+	}
+	
+	public void updateCurrency(Currency currencyToUpdate) {
+		
+		Optional<Currency> opt = currencyRepository.findById(currencyToUpdate.getId());
+		
+		if (opt.isPresent()) {
+			currencyRepository.save(currencyToUpdate); 
+		} else {
+			throw new DataValueException("Couldn`t find currency by Id: " + currencyToUpdate.getId());
+		}
+
+	}
+		
+	private void saveNew(Currency currency) {
 		currencyRepository.save(currency);
 	}
 
-	public void updateRateByDateAndCode(LocalDate date, String currencyCode, BigDecimal newValue) throws DataValueException {
+	private void updateRateByDateAndCode(LocalDate date, String currencyCode, BigDecimal newValue) throws DataValueException {
 
 		Optional<CurrencyRate> opt = currencRateRepository.getRateByCurrencyCodeAndDate(date, currencyCode);
-		if (opt.isPresent()) {
+		
+			if (opt.isPresent()) {
 			CurrencyRate updatedRate = opt.get();
 			updatedRate.setRateValue(newValue);
 			currencRateRepository.save(updatedRate);
@@ -109,7 +124,6 @@ public class CurrencyService {
                 } else {
                     checkingDate = checkingDate.minusDays(1);
                     request.setOnDate(checkingDate);
-                    System.out.println("Zmiana daty na: " + checkingDate);
                 }
             }
         }
@@ -135,6 +149,16 @@ public class CurrencyService {
 			saveNew(currencyMapperProvider.mapToCurrencyWithSingleDateRate(providerResponse));
 			return true;
 		}
+	}
+	
+	private boolean isExistByRequest(LocalDate date, String currencyCode) {
+		return currencyRepository.isExistByDateAndCurrencyCode(date, currencyCode) > 0;
+	}
+
+	private Long ifExistGetCurrencyId(String currencyCode) {
+		Long idCurrencyCode = currencyRepository.getIdByCodeName(currencyCode);
+		return idCurrencyCode;
+		
 	}
 
 }

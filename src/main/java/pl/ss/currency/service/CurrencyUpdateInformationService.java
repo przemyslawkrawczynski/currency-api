@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import pl.ss.currency.dataprovider.DataProvider;
@@ -43,13 +45,17 @@ public class CurrencyUpdateInformationService {
 		return dataFromNbp;
 	}
 	
+	@Transactional
 	public Currency updateDataInDatabase(String currencyCode, LocalDate dateFrom, LocalDate dateTo) {
 		Long currencyId = currencyRepository.getIdByCodeName(currencyCode);
 		Currency currencyFromDataProvider = getInfoFromNbp(currencyCode, dateFrom, dateTo);
+		
 		if (currencyId == null) {
 			currencyRepository.save(currencyFromDataProvider);
 			return currencyFromDataProvider;
+			
 		} else {
+			
 			Currency currencyToUpdate = currencyRepository.findById(currencyId).get();
 			HashMap<LocalDate, CurrencyRate> currencyRatesFromDatabase = getHashMapFromCurrency(currencyToUpdate.getRates());
 			
