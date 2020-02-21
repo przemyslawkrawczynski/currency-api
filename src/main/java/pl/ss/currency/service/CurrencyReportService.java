@@ -9,6 +9,7 @@ import pl.ss.currency.domain.CurrencyRate;
 import pl.ss.currency.dtos.response.raport.CurrencyRateValueDto;
 import pl.ss.currency.exception.DataValueException;
 import pl.ss.currency.mapper.CurrencyDtoMapper;
+import pl.ss.currency.repository.CurrencyRateRaportRepository;
 import pl.ss.currency.repository.CurrencyRateRepository;
 
 @Service
@@ -16,11 +17,14 @@ public class CurrencyReportService {
 
 	private final CurrencyRateRepository currencyRateRepository;
 	private final CurrencyDtoMapper currencyDtoMapper;
+	private final CurrencyRateRaportRepository currencyRaportRepository;
 
-	public CurrencyReportService(CurrencyRateRepository currencyRateRepository, CurrencyDtoMapper currencyDtoMapper) {
+	public CurrencyReportService(CurrencyRateRepository currencyRateRepository, CurrencyDtoMapper currencyDtoMapper,
+			CurrencyRateRaportRepository currencyRaportRepository) {
 		super();
 		this.currencyRateRepository = currencyRateRepository;
 		this.currencyDtoMapper = currencyDtoMapper;
+		this.currencyRaportRepository = currencyRaportRepository;
 	}
 
 	// 1.
@@ -35,7 +39,6 @@ public class CurrencyReportService {
 	}
 
 	// 2.
-
 	public CurrencyRateValueDto getMinValueByCodeAndRange(String currencyCode, LocalDate dateFrom, LocalDate dateTo) {
 
 		List<Object[]> resultlist = currencyRateRepository.getMinValueByCodeAndDateRange(currencyCode, dateFrom, dateTo);
@@ -65,7 +68,7 @@ public class CurrencyReportService {
 
 	//4
 	public List<CurrencyRateValueDto> get5BestRates(String currencyCode) {
-		List<CurrencyRate> results = currencyRateRepository.get5BestRatesByCode(currencyCode);
+		List<CurrencyRate> results = currencyRaportRepository.get5maxResults(currencyCode);
 		if (results.size() > 0) {
 			return currencyDtoMapper.mapToCurrencyRateValueDtosFromCurrancyRates(results);
 		} else {
@@ -77,7 +80,7 @@ public class CurrencyReportService {
 
 	//5
 	public List<CurrencyRateValueDto> get5LowestRates(String currencyCode) {
-		List<CurrencyRate> results = currencyRateRepository.get5LowestRatesByCode(currencyCode);
+		List<CurrencyRate> results = currencyRaportRepository.get5minResults(currencyCode);
 		if (results.size() > 0) {
 			return currencyDtoMapper.mapToCurrencyRateValueDtosFromCurrancyRates(results);
 		} else {

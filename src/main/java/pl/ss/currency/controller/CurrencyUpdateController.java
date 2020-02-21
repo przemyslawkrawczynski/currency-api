@@ -26,15 +26,9 @@ public class CurrencyUpdateController {
 		this.validator = validator;
 	}
 
-	@GetMapping("/{code}/{dateFrom}/{dateTo}")
-	public ResponseEntity<Currency> getCurrencyUpdatedByCodeAndDateRange(@PathVariable String code,@PathVariable String dateFrom,@PathVariable String dateTo) {
-		validator.validateCode(code);
-		Currency updatedCurrency = service.getInfoFromNbp(code, LocalDate.parse(dateFrom), LocalDate.parse(dateTo));
-		return ResponseEntity.ok(updatedCurrency);		
-	}
 	
 	@PutMapping("/{code}/{dateFrom}/{dateTo}")
-	public ResponseEntity<Currency> updateCurrencyUpdatedByCodeAndDateRange(@PathVariable String code,@PathVariable String dateFrom,@PathVariable String dateTo) {
+	public ResponseEntity<Currency> updateCurrencyByCodeAndRangeDate(@PathVariable String code,@PathVariable String dateFrom,@PathVariable String dateTo) {
 		validator.validateCode(code);
 		Currency updatedCurrency = service.updateDataInDatabase(code, LocalDate.parse(dateFrom), LocalDate.parse(dateTo));
 		return ResponseEntity.ok(updatedCurrency);		

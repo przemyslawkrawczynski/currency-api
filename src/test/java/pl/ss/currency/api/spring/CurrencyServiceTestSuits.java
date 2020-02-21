@@ -1,7 +1,6 @@
 package pl.ss.currency.api.spring;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 
 import javax.persistence.EntityManager;
@@ -194,10 +193,11 @@ public class CurrencyServiceTestSuits {
 		CurrencyRateDto resultRateDto = currencyService.getCurrencyActualData(currencyRequest);
 		
 		//ResultValues
-		boolean isExistInDatabaseAfterRequest = currencyRepository.isExistByDateAndCurrencyCode(serchingDate, currencyCode) > 0;
+		boolean isExistInDatabaseAfterRequest = currencyRepository.isExistByDateAndCurrencyCode(serchingDate.minusDays(2), currencyCode) > 0;
 		String resultCode = resultRateDto.getCurrencyCode();
 		LocalDate dateOfRateFromResult = resultRateDto.getRateDate(); 
 		
+	
 		//ExpectedValue
 		LocalDate dateOfRateExpected = serchingDate.minusDays(2);
 		

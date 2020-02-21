@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.xml.ws.Response;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +31,10 @@ public class CurrencyDtoMapper {
 				.collect(Collectors.toList());
 	}
 	
-	public CurrencyRateValueDto mapFromMinOrMaxValueResult(Object[] resposne, String currencyCode) {
-		
-		Date date = (Date) resposne[0];
-		LocalDate dateResult = date.toLocalDate();
-		BigDecimal value = (BigDecimal) resposne[1];
+	public CurrencyRateValueDto mapFromMinOrMaxValueResult(Object[] response, String currencyCode) {
+	
+		LocalDate dateResult = (LocalDate) response[0];
+		BigDecimal value = (BigDecimal) response[1];
 		
 		return new CurrencyRateValueDto(currencyCode, dateResult, value);
 		

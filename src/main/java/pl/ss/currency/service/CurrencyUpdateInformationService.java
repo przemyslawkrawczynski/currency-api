@@ -36,7 +36,7 @@ public class CurrencyUpdateInformationService {
 		this.currencyMapperProvider = currencyMapperProvider;
 	}
 
-	public Currency getInfoFromNbp(String currencyCode, LocalDate dateFrom, LocalDate dateTo) {
+	private Currency getInfoFromNbp(String currencyCode, LocalDate dateFrom, LocalDate dateTo) {
 		
 		String responseFromDataProvider = dataProvider.getCurrencyDataByRangeDateAndCurrencyCode(currencyCode, dateFrom, dateTo);		
 		Currency dataFromNbp = currencyMapperProvider.mapToCurrencyWithRateList(responseFromDataProvider);

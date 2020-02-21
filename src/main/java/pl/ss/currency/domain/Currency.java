@@ -34,6 +34,7 @@ public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String currencyCode;
     private String currencyTableOnNbp;
     private String currencyDescription;
