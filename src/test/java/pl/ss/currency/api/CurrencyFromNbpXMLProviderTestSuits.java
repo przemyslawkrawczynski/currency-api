@@ -11,10 +11,9 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 import pl.ss.currency.dataprovider.DataProvider;
-import pl.ss.currency.domain.CurrencyInfo;
 import pl.ss.currency.dtos.request.CurrencyRequest;
-import pl.ss.currency.mapper.MapperProvider;
-import pl.ss.currency.validator.DataProviderResponseResolver;
+import pl.ss.currency.dtos.response.CurrencyInfo;
+import pl.ss.currency.mapper.CurrencyMapperProvider;
 import pl.ss.currency.validator.RequestValidator;
 
 public class CurrencyFromNbpXMLProviderTestSuits {
@@ -40,17 +39,15 @@ public class CurrencyFromNbpXMLProviderTestSuits {
 		
 		// Given - Mock
 		DataProvider dataProvider = mock(DataProvider.class);
-		MapperProvider mapperProvider = mock(MapperProvider.class);
+		CurrencyMapperProvider currencyMapperProvider = mock(CurrencyMapperProvider.class);
 		RequestValidator requestValidator = mock(RequestValidator.class); 
-		DataProviderResponseResolver responseResolver = mock(DataProviderResponseResolver.class);
-		
-		currencyProvider = new CurrencyFromNbpXMLProvider(dataProvider, mapperProvider, requestValidator, responseResolver);
+
+		currencyProvider = new CurrencyFromNbpXMLProvider(dataProvider, currencyMapperProvider, requestValidator);
 
 		// Mock Learning
 		doNothing().when(requestValidator).validate(testedCurrencyRequest);
 		when(dataProvider.getCurrencyDataByRequest(testedCurrencyRequest)).thenReturn(testDataResponse);
-		when(responseResolver.getResponse(testedCurrencyRequest, dataProvider)).thenReturn(testDataResponse);
-		when(mapperProvider.mapToCurrencyInfo(testDataResponse)).thenReturn(preparedResponse);
+		when(currencyMapperProvider.mapToCurrencyInfo(testDataResponse)).thenReturn(preparedResponse);
 
 
 		//When
@@ -59,9 +56,7 @@ public class CurrencyFromNbpXMLProviderTestSuits {
 		
 		//Then
 		verify(requestValidator, times(1)).validate(testedCurrencyRequest);
-		verify(mapperProvider, times(1)).mapToCurrencyInfo(testDataResponse);
-		verify(responseResolver, times(1)).getResponse(testedCurrencyRequest, dataProvider);	
-		
+		verify(currencyMapperProvider, times(1)).mapToCurrencyInfo(testDataResponse);
 
 	}
 

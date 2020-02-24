@@ -12,12 +12,12 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import pl.ss.currency.domain.CurrencyInfo;
+import pl.ss.currency.dtos.response.CurrencyInfo;
 import pl.ss.currency.dtos.response.ExchangeRatesSeries;
 
 public class XmlResponseFromNbpMapperTestSuits {
 	
-	private XmlResponseFromNbpMapper mapper = new XmlResponseFromNbpMapper();
+	private XmlResponseFromNbpCurrencyMapper mapper = new XmlResponseFromNbpCurrencyMapper();
 	
 	@Test
 	public void shouldMapToExchangeRatesSeriesFromXMLStringResponse() throws IOException {

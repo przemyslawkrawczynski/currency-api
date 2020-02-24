@@ -1,32 +1,26 @@
-package pl.ss.currency.domain;
+package pl.ss.currency.dtos.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class CurrencyInfo {
 
-    private String currencyName;
     private String currencyCode;
     private BigDecimal currencyRate;
-    private LocalDate checkingDate;
+    private LocalDate rateDate;
 
-    private CurrencyInfo(String currencyName, String currencyCode, BigDecimal currencyRate, LocalDate checkingDate) {
-        this.currencyName = currencyName;
+    private CurrencyInfo(String currencyCode, BigDecimal currencyRate, LocalDate checkingDate) {
+
         this.currencyCode = currencyCode;
         this.currencyRate = currencyRate;
-        this.checkingDate = checkingDate;
+        this.rateDate = checkingDate;
     }
 
     public static class CurrencyInfoBuilder {
-        private String currencyName;
         private String currencyCode;
         private BigDecimal currencyRate;
         private LocalDate checkingDate;
 
-        public CurrencyInfoBuilder setCurrencyName(String name) {
-            this.currencyName = name;
-            return this;
-        }
         public CurrencyInfoBuilder setCurrencyCode(String code) {
             this.currencyCode = code;
             return this;
@@ -48,14 +42,12 @@ public class CurrencyInfo {
         }
 
         public CurrencyInfo build() {
-            return new CurrencyInfo(currencyName, currencyCode, currencyRate, checkingDate);
+            return new CurrencyInfo(currencyCode, currencyRate, checkingDate);
         }
 
     }
 
-    public String getCurrencyName() {
-        return currencyName;
-    }
+
 
     public String getCurrencyCode() {
         return currencyCode;
@@ -66,12 +58,12 @@ public class CurrencyInfo {
     }
 
     public LocalDate getCheckingDate() {
-        return checkingDate;
+        return rateDate;
     }
 
 
 	@Override
 	public String toString() {
-		return getCheckingDate()+ "| Kod Waluty: " + getCurrencyCode() + " | Nazwa waluty: " + getCurrencyName() + " | Średni kurs: " + getCurrencyRate();
+		return getCheckingDate()+ "| Kod Waluty: " + getCurrencyCode() + " | Średni kurs: " + getCurrencyRate();
 	}
 }
