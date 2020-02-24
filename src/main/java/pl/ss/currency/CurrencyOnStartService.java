@@ -124,6 +124,7 @@ public class CurrencyOnStartService implements CommandLineRunner {
         }
 
         currency4.addCountry(country6);
+        currency4.addCountry(country1);
         currencyRepository.save(currency4);
         currencyRateRepository.saveAll(currencyList4);
         

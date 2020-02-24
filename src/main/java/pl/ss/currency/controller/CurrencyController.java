@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.ss.currency.domain.CurrencyRate;
 import pl.ss.currency.dtos.request.CurrencyRequest;
 import pl.ss.currency.dtos.response.CurrencyInfo;
+import pl.ss.currency.repository.CountryWithMoreThanOneCurrency;
 import pl.ss.currency.repository.CurrencyRateRaportRepository;
+import pl.ss.currency.service.CountryService;
 import pl.ss.currency.service.CurrencyService;
 
 @RestController
@@ -20,12 +22,15 @@ public class CurrencyController {
 	
 	private final CurrencyService currencyService;
 	private final CurrencyRateRaportRepository raportRepository;
+	private final CountryService countryService;
 
 
-	public CurrencyController(CurrencyService currencyService, CurrencyRateRaportRepository raportRepository) {
+	public CurrencyController(CurrencyService currencyService, CurrencyRateRaportRepository raportRepository,
+			CountryService countryService) {
 		super();
 		this.currencyService = currencyService;
 		this.raportRepository = raportRepository;
+		this.countryService = countryService;
 	}
 
 	@GetMapping	
@@ -37,5 +42,10 @@ public class CurrencyController {
 	@GetMapping("/list")
 	public List<CurrencyRate> getList() {
 		return raportRepository.get5maxResults("USD");
+	}
+	
+	@GetMapping("/list/morethan")
+	public List<CountryWithMoreThanOneCurrency> getMoreThanOneCurrencyCountry() {
+		return countryService.getMoreThanOneCurrencyCountry();
 	}
 }

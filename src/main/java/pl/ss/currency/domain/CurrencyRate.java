@@ -16,19 +16,19 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class CurrencyRate {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "currency_id")
+	@JoinColumn(name = "currency_id")
 	@JsonBackReference
 	private Currency currency;
 	private LocalDate rateDate;
 	@Column(precision = 5, scale = 4, columnDefinition = "DECIMAL(5,4)")
 	private BigDecimal rateValue;
-	
+
 	public CurrencyRate(Long id, Currency currency, LocalDate rateDate, BigDecimal rateValue) {
 		super();
 		this.id = id;
@@ -36,9 +36,10 @@ public class CurrencyRate {
 		this.rateDate = rateDate;
 		this.rateValue = rateValue;
 	}
-	
-	public CurrencyRate() {}	
-	
+
+	public CurrencyRate() {
+	}
+
 	public CurrencyRate(Currency currency, LocalDate rateDate, BigDecimal rateValue) {
 		this.currency = currency;
 		this.rateDate = rateDate;
@@ -76,7 +77,5 @@ public class CurrencyRate {
 	public void setRateValue(BigDecimal rateValue) {
 		this.rateValue = rateValue;
 	}
-		
-	
-	
+
 }

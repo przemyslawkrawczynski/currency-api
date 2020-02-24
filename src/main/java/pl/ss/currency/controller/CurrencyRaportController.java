@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import pl.ss.currency.dtos.response.raport.CurrencyRateValueDto;
+import pl.ss.currency.repository.CurrencyDifferenceValue;
 import pl.ss.currency.service.CurrencyReportService;
 
 @RestController
@@ -39,9 +40,9 @@ public class CurrencyRaportController {
 	}
 	
 	@GetMapping("/diff/{dateFrom}/{dateTo}")
-	public ResponseEntity<CurrencyRateValueDto> getCurrencyWhereMaxDiffrenceInTime(@PathVariable String dateFrom, @PathVariable String dateTo) {	
+	public ResponseEntity<CurrencyDifferenceValue> getCurrencyWhereMaxDiffrenceInTime(@PathVariable String dateFrom, @PathVariable String dateTo) {	
 				
-		CurrencyRateValueDto dto = currencyReportService.getCurrencyWhereMaxDiffrenceRateOfTime(LocalDate.parse(dateFrom),LocalDate.parse(dateTo));
+		CurrencyDifferenceValue dto = currencyReportService.getCurrencyWhereMaxDiffrenceRateOfTime(LocalDate.parse(dateFrom),LocalDate.parse(dateTo));
 		return ResponseEntity.ok(dto);
 	}
 	

@@ -1,19 +1,15 @@
 package pl.ss.currency.mapper;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.xml.ws.Response;
-
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import pl.ss.currency.domain.CurrencyRate;
 import pl.ss.currency.dtos.response.raport.CurrencyRateValueDto;
-import pl.ss.currency.repository.CurrencyRateRepository;
+import pl.ss.currency.repository.RateValueDto;
 
 @Service
 public class CurrencyDtoMapper {
@@ -31,10 +27,10 @@ public class CurrencyDtoMapper {
 				.collect(Collectors.toList());
 	}
 	
-	public CurrencyRateValueDto mapFromMinOrMaxValueResult(Object[] response, String currencyCode) {
+	public CurrencyRateValueDto mapFromMinOrMaxValueResult(RateValueDto rateValue, String currencyCode) {
 	
-		LocalDate dateResult = (LocalDate) response[0];
-		BigDecimal value = (BigDecimal) response[1];
+		LocalDate dateResult = rateValue.getRateDate();
+		BigDecimal value = rateValue.getRateValue();
 		
 		return new CurrencyRateValueDto(currencyCode, dateResult, value);
 		

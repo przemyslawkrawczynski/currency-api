@@ -14,29 +14,29 @@ import pl.ss.currency.domain.CurrencyRate;
 @Repository
 public interface CurrencyRateRepository extends CrudRepository<CurrencyRate, Long> {
 	
-	@Query(value = "Select c.currency.currencyCode, (max(c.rateValue)-min(c.rateValue)) as diff From CurrencyRate c	WHERE c.rateDate between :dateFrom AND :dateTo	group by c.currency.currencyCode order by diff DESC")
-	List<Object[]> getDifferences(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	@Query(value = "Select c.currency.currencyCode as currencyCode, (max(c.rateValue)-min(c.rateValue)) as queryValue From CurrencyRate c WHERE c.rateDate between :dateFrom AND :dateTo group by c.currency.currencyCode order by queryValue DESC")
+	List<CurrencyDifferenceValue> getDifference(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
 	@Query(value = "Select c From CurrencyRate c Where c.rateDate = :date and c.currency.currencyCode = :currencyCode")
 	Optional<CurrencyRate> getRateByCurrencyCodeAndDate(@Param("date") LocalDate date, @Param("currencyCode") String currencyCode);
 	
-	@Query(value = "Select c.rateDate, c.rateValue from CurrencyRate c" + 
+	@Query(value = "Select c.rateDate as rateDate, c.rateValue as rateValue from CurrencyRate c" + 
 			" where c.currency.currencyCode = :currencyCode" + 
 			" and c.rateDate between :dateFrom and :dateTo" + 
 			" and c.rateValue = ("+ 
 			" select min(r.rateValue) from CurrencyRate r " + 
 			" where r.currency.currencyCode = :currencyCode" + 
 			" AND r.rateDate between :dateFrom and :dateTo)")
-	List<Object[]> getMinValueByCodeAndDateRange(@Param("currencyCode") String currencyCode, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	List<RateValueDto> getMinValueByCodeAndDateRange(@Param("currencyCode") String currencyCode, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
-	@Query(value = "Select c.rateDate, c.rateValue from CurrencyRate c" + 
+	@Query(value = "Select c.rateDate as rateDate, c.rateValue as rateValue from CurrencyRate c" + 
 			" where c.currency.currencyCode = :currencyCode" + 
 			" and c.rateDate between :dateFrom and :dateTo" + 
 			" and c.rateValue = ("+ 
 			" select max(r.rateValue) from CurrencyRate r " + 
 			" where r.currency.currencyCode = :currencyCode" + 
 			" AND r.rateDate between :dateFrom and :dateTo)")
-	List<Object[]> getMaxValueByCodeAndDateRange(@Param("currencyCode") String currencyCode, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	List<RateValueDto> getMaxValueByCodeAndDateRange(@Param("currencyCode") String currencyCode, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
 	@Query(value = "SELECT c FROM CurrencyRate c WHERE c.currency.currencyCode = :currencyCode ORDER by c.rateValue DESC")
 	List<CurrencyRate> get5BestRatesByCode(@Param("currencyCode") String currencyCode);	

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import pl.ss.currency.domain.Country;
 import pl.ss.currency.repository.CountryRepository;
+import pl.ss.currency.repository.CountryWithMoreThanOneCurrency;
 
 @Service
 public class CountryService {
@@ -20,7 +21,10 @@ public class CountryService {
 		this.countryRepository = countryRepository;
 	}
 
-
+	public List<CountryWithMoreThanOneCurrency> getMoreThanOneCurrencyCountry() {
+		return countryRepository.getCountryWhereCurrencysMoreThanOne();
+		
+	}
 
 	public Map<String, Integer> getCountryWhereMoreThanOneCurrency() {
 		

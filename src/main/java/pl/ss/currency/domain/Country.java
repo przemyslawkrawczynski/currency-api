@@ -19,8 +19,7 @@ public class Country {
     private Long id;
     private String countryName;
     
-    @ManyToMany(mappedBy = "countrySet", fetch = FetchType.EAGER)
-    
+    @ManyToMany(mappedBy = "countrySet", fetch = FetchType.EAGER)    
     private Set<Currency> currencySet;
 
     public Country() {}
