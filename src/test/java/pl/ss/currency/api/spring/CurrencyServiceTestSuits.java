@@ -26,7 +26,7 @@ import pl.ss.currency.service.CurrencyService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("TEST")
+//@ActiveProfiles("TEST")
 @Transactional
 public class CurrencyServiceTestSuits {
 

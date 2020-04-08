@@ -10,12 +10,17 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import pl.ss.currency.dataprovider.DataProvider;
 import pl.ss.currency.dtos.request.CurrencyRequest;
 import pl.ss.currency.dtos.response.CurrencyInfo;
 import pl.ss.currency.mapper.CurrencyMapperProvider;
 import pl.ss.currency.validator.RequestValidator;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class CurrencyFromNbpXMLProviderTestSuits {
 	
 	private CurrencyFromNbpXMLProvider currencyProvider;

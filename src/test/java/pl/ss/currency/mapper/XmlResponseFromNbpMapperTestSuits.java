@@ -12,9 +12,14 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import pl.ss.currency.dtos.response.CurrencyInfo;
 import pl.ss.currency.dtos.response.ExchangeRatesSeries;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class XmlResponseFromNbpMapperTestSuits {
 	
 	private XmlResponseFromNbpCurrencyMapper mapper = new XmlResponseFromNbpCurrencyMapper();

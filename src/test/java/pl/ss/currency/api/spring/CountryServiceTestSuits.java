@@ -20,7 +20,7 @@ import pl.ss.currency.service.CountryService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("TEST")
+//@ActiveProfiles("TEST")
 public class CountryServiceTestSuits {
 	
 	@Autowired

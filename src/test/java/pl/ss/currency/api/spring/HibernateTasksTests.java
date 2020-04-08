@@ -30,7 +30,7 @@ import pl.ss.currency.service.CurrencyReportService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("TEST")
+//@ActiveProfiles("TEST")
 @Transactional
 public class HibernateTasksTests {
 

@@ -3,6 +3,9 @@ package pl.ss.currency.validator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import pl.ss.currency.dtos.request.CurrencyRequest;
 import pl.ss.currency.exception.ValidationException;
 import pl.ss.currency.validator.CurrencyRequestValidator;
@@ -14,6 +17,8 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ValidatorTestSuits {
 	
 	private final RequestValidator validator = new CurrencyRequestValidator();
